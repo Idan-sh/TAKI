@@ -174,8 +174,8 @@ void Sort_Stats_Array(GAME_DATA* game_data_p);
 void Swap_Stats(STAT_DATA stats[], int first_i, int second_i);
 
 
-2
-int main() {
+int main()
+{
     srand(time(NULL)); // Generate a random seed for the random functions, using the computer's internal clock.
 
     GAME_DATA game_data; // The game settings, containing the number of players, current top card, and the game's direction.
