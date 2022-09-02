@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug in Terminal",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/exe/${fileBasenameNoExtension}", // Path of the exeutable file.
             "preLaunchTask": "C/C++: clang build active file",
             "args": [],
             "terminal": "external",

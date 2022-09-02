@@ -8,18 +8,26 @@
                 "-fcolor-diagnostics",
                 "-fansi-escape-codes",
                 "-g",
-                "${file}",
+                "${file}",                      // Path of main source file to build.
+                "${fileDirname}/functions.c",   // Path of functions source file to build.          
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${workspaceFolder}/exe/${fileBasenameNoExtension}" // Output executable path.
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"
             ],
             "group": "build",
-            "detail": "compiler: /usr/bin/clang"
+            "detail": "compiler: /usr/bin/clang",
+            "presentation": {
+                "reveal": "always",
+                "revealProblems": "onProblem",
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
         }
     ],
     "version": "2.0.0"
