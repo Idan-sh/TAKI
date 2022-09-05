@@ -1,171 +1,28 @@
 #include "header.h"
 
+// ---------------------- Print Functions -----------------------
 
 /*
- * Prints the welcome message of the game.
+ * Print Welcome Message.
  */
 void Print_Welcome_Screen()
 {
-    // Print message.
     printf("************  Welcome to TAKI game !!! ***********\n");
 }
 
 
 /*
- * Get the number of players that in the game.
- * Receives the pointer to the nof_players variable that will be set in the main function.
- * Sets the number if players value into that variable.
+ * Prints the received card's info.
+ * Checks whether the card is a normal card or special card,
+ * Calls for the right print function that will print the card.
  */
-void Set_Nof_Players(int* nof_players)
+void Print_Card(CARD card)
 {
-    // Print request for the number of players in the game.
-    printf("Please enter the number of players:\n");
-    // Get the input and enter it into the received location of nof_players variable.
-    scanf("%d", nof_players);
-}
-
-
-/*
- * Get the names of all the players in the game.
- * Receives players array, and the number of players in the game.
- * The maximum length of each name is MAX_NAME_LEN (21), where the last character is for the closing character '\0'.
- */
-void Set_Players_Names(PLAYER players[], int nof_players)
-{
-    // For each player in players array.
-    for(int i = 0; i < nof_players; i++)
-    {
-        // Request name input for the player in index i. (we start counting players from 1, so the player number is (i+1))
-        printf("Please enter the first name of player #%d:\n", i+1);
-        // Get the name into this player's name.
-        scanf("%s", players[i].name);
-    }
-}
-
-
-/*
- * Initialize the game's data:
- * The starting player index, the game won status, the direction of the turns
- * and the card starting the deck of cards.
- */
-void Init_Game_Data(GAME_DATA* game_data_p)
-{
-    game_data_p->player_index = 0; // Initialize the index of the current player playing.
-    game_data_p->is_game_won = false; // Initialize the game won to be false.
-    game_data_p->is_direction_right = true; // Initialize the direction of the game to the right.
-
-    // Get a random first card in the game, sets that card on the top of the card deck.
-    Get_Random_Normal_Card(&game_data_p->top_card);
-
-    game_data_p->nof_stats = 0; // Initialize the game stats to the logic size of 0.
-
-    // Initialize every stat is the stats array.
-    for (int i = 0; i < GAME_STATS_MAX_SIZE; i++)
-    {
-        strcpy(game_data_p->stats[i].card_type, STAT_EMPTY); // Initialize the stats' names to be "EMPTY" (when a stat will be added this value will be overwritten).
-        game_data_p->stats[i].card_num = EMPTY; // Initialize the number to be empty.
-        game_data_p->stats[i].card_freq = 0; // Initialize the card frequency;
-    }
-}
-
-
-/*
- * Initialize the allocation of the players' cards.
- * Receives a pointer to the game's data, which contains all the data for the players.
- * Receives the wanted size for the array of players' cards.
- * Allocates memory for the cards array for all the starting cards.
- * If the allocation failed, prints error message and ends the program.
- */
-void Init_Allocate_Players_Cards(GAME_DATA* game_data_p, int size)
-{
-    // For each player in the game.
-    for (int player_i = 0; player_i < game_data_p->nof_players; player_i++)
-    {
-        // Try to allocate enough space for the starting cards of that player.
-        game_data_p->players[player_i].cards = (CARD *) malloc(sizeof(CARD) * size);
-
-        game_data_p->players[player_i].cards_phys_size = size; // Initialize each player's cards array physical size.
-
-        // Check if the allocation failed.
-        if (game_data_p->players[player_i].cards == NULL)
-        {
-            printf("Memory allocation failed!!!\n"); // Print error message.
-            exit(1); // Stop the program.
-        }
-    }
-}
-
-
-/*
- * Initialize the allocation of the players' data.
- * Receives a pointer to the game's data, where the players array is stored.
- * Allocates memory for the players' data array.
- * If the allocation failed, prints error message and ends the program.
- */
-void Init_Allocate_Players(GAME_DATA* game_data_p)
-{
-    // Try to allocate enough space for all the players.
-    game_data_p->players = (PLAYER *) malloc(sizeof(PLAYER) * game_data_p->nof_players);
-
-    // Check if the allocation failed.
-    if (game_data_p->players == NULL)
-    {
-        // Print error message.
-        printf("Memory allocation failed!!!\n");
-        exit(1); // Stop the program.
-    }
-}
-
-
-/*
- * Find the middle index of a string.
- * Receives a string to find its middle index.
- * If the string's length is an even number, the middle index will be to the left of the exact middle location.
- * Else, the string length is an odd number, so the middle index is the exact middle location.
- * Returns the result index.
- * (This function picks the LEFT index from the exact middle in even length strings)
- */
-int Find_Str_Mid_Index(char str[])
-{
-    int i = 0; // The index of the current character in the string.
-    int len = 0; // The count of the length of the string.
-
-    // Count the length of the string.
-    while (str[i] != '\0')
-    {
-        len++; // Add 1 to the length.
-        i++; // Move to the next index in the string.
-    }
-
-    // Check if the length of the string is an even number.
-    if (len % 2 == 0)
-        return len / 2 - 1; // It's an even number, the middle index will be the number to the left of the exact middle.
+    // Check if the card is a NORMAL card.
+    if (!strcmp(card.type, NORMAL))
+        Print_Normal_Card(card); // The card type is NORMAL, then prints with the normal cards functions.
     else
-        return len / 2; // It's an odd number, so the middle index is that exact number.
-}
-
-
-/*
- * Find the middle index of a string.
- * Receives a string to find its middle index.
- * If the string's length is an even number, the middle index will be to the right of the exact middle location.
- * Else, the string length is an odd number, so the middle index is the exact middle location.
- * Returns the result index.
- * (This function picks the RIGHT index from the exact middle in even length strings)
- */
-int Find_Str_Mid_Index2(char str[])
-{
-    int i = 0; // The index of the current character in the string.
-    int len = 0; // The count of the length of the string.
-
-    // Count the length of the string.
-    while (str[i] != '\0')
-    {
-        len++; // Add 1 to the length.
-        i++; // Move to the next index in the string.
-    }
-
-    return len / 2; // Return the middle index of the length of the string.
+        Print_Special_Card(card); // The card type isn't NORMAL (the type is one of the special cards), then prints with the special cards functions.
 }
 
 
@@ -271,21 +128,6 @@ void Print_Special_Card(CARD card)
 
 
 /*
- * Prints the received card's info.
- * Checks whether the card is a normal card or special card,
- * Calls for the right print function that will print the card.
- */
-void Print_Card(CARD card)
-{
-    // Check if the card is a NORMAL card.
-    if (!strcmp(card.type, NORMAL))
-        Print_Normal_Card(card); // The card type is NORMAL, then prints with the normal cards functions.
-    else
-        Print_Special_Card(card); // The card type isn't NORMAL (the type is one of the special cards), then prints with the special cards functions.
-}
-
-
-/*
  * Prints all the cards the player has.
  * Receives the player whose cards should be printed.
  * Calls for the print card function that will call the right print function, whether the card is a normal card or the card is a special card.
@@ -327,7 +169,7 @@ void Print_Current_Deck(CARD top_card, PLAYER player)
 void Print_Special_Card_Stat(STAT_DATA stat)
 {
     int type_i = 0; // The index of the type's string.
-    int print_i = COL_LEN/2 - Find_Str_Mid_Index2(stat.card_type); // The index where the type's string needs to start from. Starts from the middle of the collum minus the mid of the card's name.
+    int print_i = COL_LEN/2 - Find_Str_Mid_Index(stat.card_type); // The index where the type's string needs to start from. Starts from the middle of the collum minus the mid of the card's name.
     int line_i = 0; // The index of the character in the line.
 
     // While the line index didn't go past the length of the collum.
@@ -369,6 +211,253 @@ void Print_Game_Stats(GAME_DATA game_data)
         else
             Print_Special_Card_Stat(game_data.stats[stat_i]); // Print special card.
     }
+}
+
+
+
+// ------------------ Game Setup Functions --------------------
+
+/*
+ * Receives number of players variable's address.
+ * Sets value from user input.
+ */
+void Set_Nof_Players(int* nof_players)
+{
+    printf("Please enter the number of players:\n");
+    scanf("%d", nof_players);
+}
+
+
+/*
+ * Set the players' names from user input.
+ * Receives players array, and the number of players in the game.
+ * The maximum length of each name is MAX_NAME_LEN.
+ */
+void Set_Players_Names(PLAYER players[], int nof_players)
+{
+    // For each player in players array.
+    for(int i = 1; i <= nof_players; i++)
+    {
+        // Request and set name input for current player.
+        printf("Please enter the first name of player #%d:\n", i);
+        scanf("%s", players[i - 1].name);
+    }
+}
+
+
+/*
+ * Initialize the game's data:
+ * The starting player index, the game won status, the direction of the turns
+ * and the card starting the deck of cards.
+ */
+void Init_Game_Data(GAME_DATA* game_data_p)
+{
+    game_data_p->player_index = 0; // Initialize the index of the current player playing.
+    game_data_p->is_game_won = false; // Initialize the game won to be false.
+    game_data_p->is_direction_right = true; // Initialize the direction of the game to the right.
+
+    // Get a random first card in the game, sets that card on the top of the card deck.
+    Get_Random_Normal_Card(&game_data_p->top_card);
+
+    game_data_p->nof_stats = 0; // Initialize the game stats to the logic size of 0.
+
+    // Initialize every stat is the stats array.
+    for (int i = 0; i < GAME_STATS_MAX_SIZE; i++)
+    {
+        strcpy(game_data_p->stats[i].card_type, STAT_EMPTY); // Initialize the stats' names to be "EMPTY" (when a stat will be added this value will be overwritten).
+        game_data_p->stats[i].card_num = EMPTY; // Initialize the number to be empty.
+        game_data_p->stats[i].card_freq = 0; // Initialize the card frequency;
+    }
+}
+
+
+/*
+ *  Hand each player in the players array NOF_START_CARDS (4).
+ *  Receives an array of players and its size- the number of players in the game.
+ */
+void Hand_Start_Cards(GAME_DATA* game_data_p, PLAYER players[], int nof_players)
+{
+    CARD* current_card_p; // The pointer to the current card being received.
+
+    // For each player in the players array.
+    for (int player_i = 0; player_i < nof_players; player_i++)
+    {
+        players[player_i].nof_cards = 0; // Initialize the number of cards the player has.
+
+        // Add a starting card for this player.
+        for (int card_i = 0; card_i < NOF_START_CARDS; card_i++)
+        {
+            current_card_p = &players[player_i].cards[card_i]; // Get the location of the card in index card_i.
+            Take_Random_Card(current_card_p); // Get a random card and insert it into the cards array, in the location of the current card.
+            players[player_i].nof_cards++; // Add one to the count of how many cards the player has.
+
+            // Check if the card received is a normal card.
+            if (!strcmp(current_card_p->type, NORMAL))
+                Check_Stat_Normal_Card(game_data_p, *current_card_p); // Add the normal card to the stats array.
+            else // The card is not a normal card, so it's a special card.
+                Check_Stat_Special_Card(game_data_p, *current_card_p); // Add the special card to the stats array.
+        }
+    }
+}
+
+
+
+
+// ---------- Allocation and Initialization Functions ----------
+
+/*
+ * Initialize the allocation of the players' cards.
+ * Receives a pointer to the game's data, which contains all the data for the players.
+ * Receives the wanted size for the array of players' cards.
+ * Allocates memory for the cards array for all the starting cards.
+ * If the allocation failed, prints error message and ends the program.
+ */
+void Init_Allocate_Players_Cards(GAME_DATA* game_data_p, int size)
+{
+    // For each player in the game.
+    for (int player_i = 0; player_i < game_data_p->nof_players; player_i++)
+    {
+        // Try to allocate enough space for the starting cards of that player.
+        game_data_p->players[player_i].cards = (CARD *) malloc(sizeof(CARD) * size);
+
+        game_data_p->players[player_i].cards_phys_size = size; // Initialize each player's cards array physical size.
+
+        // Check if the allocation failed.
+        if (game_data_p->players[player_i].cards == NULL)
+        {
+            printf("Memory allocation failed!!!\n"); // Print error message.
+            exit(1); // Stop the program.
+        }
+    }
+}
+
+
+/*
+ * Initialize the allocation of the players' data.
+ * Receives a pointer to the game's data, where the players array is stored.
+ * Allocates memory for the players' data array.
+ * If the allocation failed, prints error message and ends the program.
+ */
+void Init_Allocate_Players(GAME_DATA* game_data_p)
+{
+    // Try to allocate enough space for all the players.
+    game_data_p->players = (PLAYER *) malloc(sizeof(PLAYER) * game_data_p->nof_players);
+
+    // Check if the allocation failed.
+    if (game_data_p->players == NULL)
+    {
+        // Print error message.
+        printf("Memory allocation failed!!!\n");
+        exit(1); // Stop the program.
+    }
+}
+
+
+/*
+ * Reallocates memory of an array of  cards into a new location, with the requested size.
+ * Receives a pointer to the player whose cards need reallocation, and the size of the wanted new cards array.
+ * Copies every card from the old location into a temporary array of cards, frees the memory previously allocated for the cards array,
+ * and tries to reallocate the memory to a new location using malloc, with the size wanted.
+ * If the reallocation fails, prints error message and quits the program.
+ * If the reallocation succeeded, then copies all the cards from the temp array into the new location, leaving free spots for the new cards.
+ */
+void Reallocate_Cards_Array(PLAYER* player_p, int size)
+{
+    int nof_cards = player_p->nof_cards; // Get the current number of cards that the player has.
+    CARD tmp_cards[nof_cards]; // A temporary array of cards that the current cards will be copied into.
+
+    // Copy every card that in the cards array into the temp array.
+    for (int card_i = 0; card_i < nof_cards; card_i++)
+        tmp_cards[card_i] = player_p->cards[card_i]; // Copy the card info into the temp array.
+
+    // Free the memory that the malloc function allocated previously for the cards array (in the old location).
+    free(player_p->cards);
+
+    // Try to allocate enough space for the cards array in the new size, in a new location.
+    player_p->cards = (CARD*) malloc(sizeof(CARD) * size);
+
+    // Check if the allocation failed.
+    if (player_p->cards == NULL)
+    {
+        printf("Memory allocation failed!!!\n");
+        exit(1); // Quit the function.
+    }
+
+    // Copy every card from the temp array into the new location that was allocated.
+    for (int card_i = 0; card_i < nof_cards; card_i++)
+        player_p->cards[card_i] = tmp_cards[card_i]; // Copy the card info into the new location.
+}
+
+
+/*
+ * Free the memory allocated by the malloc function for all the cards array.
+ * Do it for every player in the players array.
+ * Receives array of players and the number of players in the array.
+ */
+void Free_Cards_Arrays(PLAYER players[], int nof_players)
+{
+    // For each player in the players array.
+    for (int player_i = 0; player_i < nof_players; player_i++)
+        free(players[player_i].cards); // Free the memory allocated for the cards array of that player.
+}
+
+
+
+
+
+
+
+// -------------------- Everything Else Functions ---------------------
+
+/*
+ * Find the middle index of a string.
+ * Receives a string to find its middle index.
+ * If the string's length is an even number, the middle index will be to the left of the exact middle location.
+ * Else, the string length is an odd number, so the middle index is the exact middle location.
+ * Returns the result index.
+ * (This function picks the LEFT index from the exact middle in even length strings)
+ */
+int Find_Str_Mid_Index(char str[])
+{
+    int i = 0; // The index of the current character in the string.
+    int len = 0; // The count of the length of the string.
+
+    // Count the length of the string.
+    while (str[i] != '\0')
+    {
+        len++; // Add 1 to the length.
+        i++; // Move to the next index in the string.
+    }
+
+    // Check if the length of the string is an even number.
+    if (len % 2 == 0)
+        return len / 2 - 1; // It's an even number, the middle index will be the number to the left of the exact middle.
+    else
+        return len / 2; // It's an odd number, so the middle index is that exact number.
+}
+
+
+/*
+ * Find the middle index of a string.
+ * Receives a string to find its middle index.
+ * If the string's length is an even number, the middle index will be to the right of the exact middle location.
+ * Else, the string length is an odd number, so the middle index is the exact middle location.
+ * Returns the result index.
+ * (This function picks the RIGHT index from the exact middle in even length strings)
+ */
+int Find_Str_Mid_Index2(char str[])
+{
+    int i = 0; // The index of the current character in the string.
+    int len = 0; // The count of the length of the string.
+
+    // Count the length of the string.
+    while (str[i] != '\0')
+    {
+        len++; // Add 1 to the length.
+        i++; // Move to the next index in the string.
+    }
+
+    return len / 2; // Return the middle index of the length of the string.
 }
 
 
@@ -550,85 +639,6 @@ void Take_Random_Card(CARD* result_card_p)
             result_card_p->num = 1 + rand() % 9; // Get a random card number from 1 to 9, which will be the card's number.
             break;
     }
-}
-
-
-/*
- *  Hand each player in the players array NOF_START_CARDS (4).
- *  Receives an array of players and its size- the number of players in the game.
- */
-void Hand_Start_Cards(GAME_DATA* game_data_p, PLAYER players[], int nof_players)
-{
-    CARD* current_card_p; // The pointer to the current card being received.
-
-    // For each player in the players array.
-    for (int player_i = 0; player_i < nof_players; player_i++)
-    {
-        players[player_i].nof_cards = 0; // Initialize the number of cards the player has.
-
-        // Add a starting card for this player.
-        for (int card_i = 0; card_i < NOF_START_CARDS; card_i++)
-        {
-            current_card_p = &players[player_i].cards[card_i]; // Get the location of the card in index card_i.
-            Take_Random_Card(current_card_p); // Get a random card and insert it into the cards array, in the location of the current card.
-            players[player_i].nof_cards++; // Add one to the count of how many cards the player has.
-
-            // Check if the card received is a normal card.
-            if (!strcmp(current_card_p->type, NORMAL))
-                Check_Stat_Normal_Card(game_data_p, *current_card_p); // Add the normal card to the stats array.
-            else // The card is not a normal card, so it's a special card.
-                Check_Stat_Special_Card(game_data_p, *current_card_p); // Add the special card to the stats array.
-        }
-    }
-}
-
-
-/*
- * Reallocates memory of an array of  cards into a new location, with the requested size.
- * Receives a pointer to the player whose cards need reallocation, and the size of the wanted new cards array.
- * Copies every card from the old location into a temporary array of cards, frees the memory previously allocated for the cards array,
- * and tries to reallocate the memory to a new location using malloc, with the size wanted.
- * If the reallocation fails, prints error message and quits the program.
- * If the reallocation succeeded, then copies all the cards from the temp array into the new location, leaving free spots for the new cards.
- */
-void Reallocate_Cards_Array(PLAYER* player_p, int size)
-{
-    int nof_cards = player_p->nof_cards; // Get the current number of cards that the player has.
-    CARD tmp_cards[nof_cards]; // A temporary array of cards that the current cards will be copied into.
-
-    // Copy every card that in the cards array into the temp array.
-    for (int card_i = 0; card_i < nof_cards; card_i++)
-        tmp_cards[card_i] = player_p->cards[card_i]; // Copy the card info into the temp array.
-
-    // Free the memory that the malloc function allocated previously for the cards array (in the old location).
-    free(player_p->cards);
-
-    // Try to allocate enough space for the cards array in the new size, in a new location.
-    player_p->cards = (CARD*) malloc(sizeof(CARD) * size);
-
-    // Check if the allocation failed.
-    if (player_p->cards == NULL)
-    {
-        printf("Memory allocation failed!!!\n");
-        exit(1); // Quit the function.
-    }
-
-    // Copy every card from the temp array into the new location that was allocated.
-    for (int card_i = 0; card_i < nof_cards; card_i++)
-        player_p->cards[card_i] = tmp_cards[card_i]; // Copy the card info into the new location.
-}
-
-
-/*
- * Free the memory allocated by the malloc function for all the cards array.
- * Do it for every player in the players array.
- * Receives array of players and the number of players in the array.
- */
-void Free_Cards_Arrays(PLAYER players[], int nof_players)
-{
-    // For each player in the players array.
-    for (int player_i = 0; player_i < nof_players; player_i++)
-        free(players[player_i].cards); // Free the memory allocated for the cards array of that player.
 }
 
 

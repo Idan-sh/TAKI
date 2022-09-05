@@ -1,11 +1,11 @@
 #include "header.h"
 
-
 int main()
 {
-    srand(time(NULL)); // Generate a random seed for the random functions, using the computer's internal clock.
+    GAME_DATA game_data; // Game settings.
 
-    GAME_DATA game_data; // The game settings, containing the number of players, current top card, and the game's direction.
+    // Generate a random seed for the random functions, using the computer's internal clock.
+    srand(time(NULL)); 
 
     // Print welcome message.
     Print_Welcome_Screen();
@@ -13,7 +13,7 @@ int main()
     // Initialize the game's data.
     Init_Game_Data(&game_data);
 
-    // Get the number of players in the game.
+    // Set the number of players in the game.
     Set_Nof_Players(&game_data.nof_players);
 
     // Allocate memory for the data of all the players in the game.
@@ -22,7 +22,7 @@ int main()
     // Allocate memory for the arrays of each player's cards. Every player will start with the number of start cards const (4).
     Init_Allocate_Players_Cards(&game_data, NOF_START_CARDS);
 
-    // Get the name  of each player in the game.
+    // Get the name of each player in the game.
     Set_Players_Names(game_data.players, game_data.nof_players);
 
     // Give every player in the game his start cards (NOF_START_CARDS = 4).
@@ -43,5 +43,5 @@ int main()
     // Free the memory allocated by malloc function for the players array.
     free(game_data.players);
 
-    return 0;
+    return 0; // Finished the program without errors.
 }
