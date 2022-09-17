@@ -1,7 +1,7 @@
 #ifndef HEADER_H // Include header.h only once.
 #define HEADER_H
 
-// ---------- Include ---------
+// --------- Header Files ---------
 
 #include <stdio.h>
 #include <string.h>
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-// ---------- Define ----------
+// ----------- Constants ----------
 
 #define MAX_NAME_LEN 21 // The maximum length of the first name of each player. the maximum length is 20 charaters.
 #define MAX_CARD_NAME_LEN 7 // The maximum length of the special card's type string. (The longest string is 'NORMAL' which contains 7 characters)
@@ -60,7 +60,7 @@ typedef struct Card
 // Player data containing his name and an array of all the cards that in his possession.
 typedef struct Player
 {
-    char name[MAX_NAME_LEN]; // The name of the player. The maximum length of the name is MAX_NAME_LEN - 21. (the actual length of the max name is 20, and the last character is the closing character '\0\)
+    char name[MAX_NAME_LEN]; // The name of the player. The maximum length of the name is MAX_NAME_LEN.
     CARD* cards; // An array containing all the cards that belong to the player, the array is dynamic.
     int nof_cards; // The number of cards that the player has. This is both the physical and logical size of the cards array.
     int cards_phys_size; // The physical size of the cards array.
