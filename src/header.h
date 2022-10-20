@@ -69,7 +69,7 @@ typedef struct Player
 // Statistic data: The card number or type and the frequency of how many times that card was drawn.
 typedef struct Stat_Data
 {
-    char card_type[MAX_CARD_NAME_LEN]; // The card number or type.
+    char card_type[MAX_CARD_NAME_LEN]; // If card is "NORMAL" type, we use the card_num.
     int card_num;
     int card_freq; // The number of times the card was drawn.
 } STAT_DATA;
