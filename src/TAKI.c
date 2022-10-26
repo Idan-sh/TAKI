@@ -10,7 +10,7 @@ int main()
     // Print welcome message.
     Print_Welcome_Screen();
 
-    // Initialize the game's data..
+    // Initialize the game's data.
     Init_Game_Data(&game_data);
 
     // Set the number of players in the game.

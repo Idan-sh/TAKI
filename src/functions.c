@@ -364,7 +364,7 @@ void Init_Allocate_Players(GAME_DATA* game_data_p)
 void Reallocate_Cards_Array(PLAYER* player_p, int size)
 {
     int nof_cards = player_p->nof_cards; // Get the current number of cards that the player has.
-    CARD tmp_cards[nof_cards]; // A temporary array of cards that the current cards will be copied into.
+    CARD* tmp_cards = (CARD*) malloc(sizeof(CARD) * nof_cards); // A temporary array of cards that the current cards will be copied into.
 
     // Copy every card that in the cards array into the temp array.
     for (int card_i = 0; card_i < nof_cards; card_i++)
@@ -380,12 +380,14 @@ void Reallocate_Cards_Array(PLAYER* player_p, int size)
     if (player_p->cards == NULL)
     {
         printf("Memory allocation failed!!!\n");
-        exit(1); // Quit the function.
+        exit(1); // Quit with error code 1.
     }
 
     // Copy every card from the temp array into the new location that was allocated.
     for (int card_i = 0; card_i < nof_cards; card_i++)
         player_p->cards[card_i] = tmp_cards[card_i]; // Copy the card info into the new location.
+
+    free(tmp_cards); // Free memory of temporary cards array.   
 }
 
 
